@@ -5,16 +5,6 @@ if (typeof browser === 'undefined') {
 
 // browser.runtime.openOptionsPage();
 
-const uninstallUrl = "http://lawrencehook.com/rys/👋";
-browser.runtime.setUninstallURL(uninstallUrl);
-
-browser.runtime.onInstalled.addListener(object => {
-  const url = "http://lawrencehook.com/rys/welcome";
-  if (object.reason === browser.runtime.OnInstalledReason.INSTALL) {
-    browser.tabs.create({ url }, tab => {});
-  }
-});
-
 // Change the browserAction icon if the extension is disabled
 const inactiveIcons = { path: {
   16: "/images/16_dark.png",

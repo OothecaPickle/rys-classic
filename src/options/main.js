@@ -14,8 +14,6 @@ let currentUrl;
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  recordEvent('Page View: Options');
-  initAnnouncementBanner();
   browser.storage.local.get(localSettings => {
     const revealUpdates = migrateRevealSettings(localSettings);
     if (Object.keys(revealUpdates).length) {
@@ -27,11 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
       acc[id] = id in localSettings ? localSettings[id] : value;
       return acc;
     }, {});
-
-    // Show logging opt-in modal if user hasn't responded yet
-    if (!localSettings.log_prompt_answered) {
-      showLogPrompt();
-    }
 
     browser.tabs.query({ currentWindow: true, active: true }, tabs => {
       if (!tabs || tabs.length === 0) return;
@@ -254,8 +247,6 @@ function updateTimeInfo() {
 
 function updateSetting(id, value, { write=true, manual=false }={}) {
 
-  if (manual) recordEvent('Setting changed', { id, value });
-
   HTML.setAttribute(id, value);
   cache[id] = value;
 
@@ -332,8 +323,6 @@ function sidebarSectionListener(e) {
   const selected = sidebarSection.toggleAttribute('selected');
   const tag = sidebarSection.getAttribute('tag');
   const sections = qsa('.section_container:not(#template_section)');
-
-  recordEvent('Section selected', { tag, selected });
 
   // Reset
   sections.forEach(section => {
@@ -439,45 +428,3 @@ document.addEventListener('visibilitychange', () => {
     }
   }
 });
-
-
-// Announcement banners
-function initAnnouncementBanner() {
-  const container = document.getElementById('banner_container');
-  if (!container) return;
-
-  const logoUrl = browser.runtime.getURL('images/rys.svg');
-  const banners = getActiveBanners('options');
-
-  banners.forEach(banner => {
-    initBanner(banner, logoUrl, () => ({
-      element: container,
-      insertMethod: 'append'
-    }));
-  });
-}
-
-
-// Logging opt-in banner
-function showLogPrompt() {
-  const banner = document.getElementById('log_prompt_banner');
-  const yesBtn = document.getElementById('log_prompt_yes');
-  const noBtn = document.getElementById('log_prompt_no');
-  const dismissBtn = document.getElementById('log_prompt_dismiss');
-
-  banner.hidden = false;
-
-  yesBtn.addEventListener('click', () => {
-    browser.storage.local.set({ log_enabled: true, log_prompt_answered: true });
-    banner.hidden = true;
-  }, { once: true });
-
-  noBtn.addEventListener('click', () => {
-    browser.storage.local.set({ log_enabled: false, log_prompt_answered: true });
-    banner.hidden = true;
-  }, { once: true });
-
-  dismissBtn.addEventListener('click', () => {
-    banner.hidden = true;
-  }, { once: true });
-}

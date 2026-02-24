@@ -615,7 +615,7 @@ const PASSWORD_SETTINGS = {
 
 const OTHER_SETTINGS = {
   global_enable: true,
-  dark_mode: false,
+  dark_mode: true,
   log_enabled: false,
   log_prompt_answered: false,
   ...TIMED_SETTINGS,
