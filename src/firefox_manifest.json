@@ -57,5 +57,16 @@
   ],
   "web_accessible_resources": [
     "/images/rys.svg"
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@rys-classic",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      },
+      "strict_min_version": "100.0"
+    }
+  }
 }
